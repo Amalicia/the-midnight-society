@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Midnight Society — Antiquarian Fellowship — Est. MDCCCLXXII</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* === RESET & BASE === */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* === CSS VARIABLES === */
+    :root {
+      --paper-bg: #f2e8d0;
+      --paper-dark: #e8d5b0;
+      --ink-primary: #1a1008;
+      --ink-secondary: #3d2b1f;
+      --ink-faded: #6b4c35;
+      --accent-red: #8b1a1a;
+      --rule-color: #4a3728;
+
+      --midnight-bg: #0a0a0f;
+      --midnight-surface: #12121a;
+      --midnight-border: #1e1e2e;
+      --midnight-accent: #c9a84c;
+      --midnight-purple: #6b3fa0;
+      --midnight-text: #e8e0d0;
+      --midnight-muted: #7a7080;
+      --glow-red: #cc2200;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'IM Fell English', Georgia, serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* === PAPER TEXTURE (Phase 1) === */
+    body.phase-1 {
+      background-color: var(--paper-bg);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      color: var(--ink-primary);
+    }
+
+    body.phase-2 {
+      background-color: var(--midnight-bg);
+      color: var(--midnight-text);
+    }
+
+    /* === TREMOR ANIMATION === */
+    @keyframes page-tremor {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      15%       { transform: translate(-3px, 1px) rotate(-0.4deg); }
+      30%       { transform: translate(3px, -2px) rotate(0.3deg); }
+      45%       { transform: translate(-2px, 3px) rotate(-0.2deg); }
+      60%       { transform: translate(2px, -1px) rotate(0.4deg); }
+      75%       { transform: translate(-1px, 2px) rotate(-0.3deg); }
+    }
+
+    body.tremoring {
+      animation: page-tremor 0.4s ease-in-out;
+    }
+
+    /* === REVEAL OVERLAY === */
+    #reveal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      pointer-events: none;
+      background: transparent;
+    }
+
+    @keyframes page-flicker {
+      0%   { background: rgba(0,0,0,0); }
+      8%   { background: rgba(0,0,0,0.92); }
+      18%  { background: rgba(0,0,0,0.08); }
+      30%  { background: rgba(0,0,0,0.97); }
+      42%  { background: rgba(0,0,0,0.15); }
+      55%  { background: rgba(0,0,0,1); }
+      68%  { background: rgba(0,0,0,0.25); }
+      80%  { background: rgba(0,0,0,0.98); }
+      100% { background: rgba(0,0,0,1); }
+    }
+
+    #reveal-overlay.flickering {
+      animation: page-flicker 0.5s ease-in forwards;
+    }
+
+    @keyframes ink-recede {
+      0%   { clip-path: circle(100% at 50% 50%); opacity: 1; }
+      100% { clip-path: circle(0% at 50% 50%); opacity: 0; }
+    }
+
+    #reveal-overlay.ink-receding {
+      background: #0a0a0f;
+      animation: ink-recede 1.2s cubic-bezier(0.25, 0, 0.4, 1) forwards;
+    }
+
+    /* === NEWSPAPER CONTENT === */
+    #newspaper-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 30px 40px;
+    }
+
+    /* === MASTHEAD === */
+    #masthead {
+      text-align: center;
+      padding: 20px 0 12px;
+      position: relative;
+      border-bottom: 4px double var(--rule-color);
+      margin-bottom: 6px;
+    }
+
+    #masthead::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.012) 2px,
+        rgba(0,0,0,0.012) 3px
+      );
+      pointer-events: none;
+    }
+
+    #masthead-title {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: clamp(2.8rem, 8vw, 5.5rem);
+      color: var(--ink-primary);
+      line-height: 1;
+      letter-spacing: 0.02em;
+      margin-bottom: 6px;
+    }
+
+    #masthead-subtitle {
+      font-family: 'IM Fell English SC', Georgia, serif;
+      font-size: clamp(0.7rem, 1.8vw, 1rem);
+      letter-spacing: 0.2em;
+      color: var(--ink-secondary);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    #dateline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      font-family: 'IM Fell English SC', Georgia, serif;
+      font-size: 0.72rem;
+      color: var(--ink-faded);
+      letter-spacing: 0.1em;
+      border-top: 1px solid var(--rule-color);
+      border-bottom: 1px solid var(--rule-color);
+      margin-top: 6px;
+    }
+
+    #masthead-motto {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--ink-faded);
+    }
+
+    /* === BROADSHEET GRID === */
+    #broadsheet-grid {
+      display: grid;
+      grid-template-columns: 1fr 2px 1fr 2px 1fr;
+      gap: 0;
+      margin-top: 16px;
+    }
+
+    .column-rule {
+      background: var(--rule-color);
+      margin: 0 14px;
+    }
+
+    .col-1, .col-2, .col-3 {
+      padding: 0 6px;
+    }
+
+    /* === NEWSPAPER TYPOGRAPHY === */
+    .col-headline {
+      font-family: 'IM Fell English SC', Georgia, serif;
+      font-size: clamp(1rem, 2.2vw, 1.35rem);
+      line-height: 1.2;
+      color: var(--ink-primary);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--rule-color);
+      padding-bottom: 6px;
+    }
+
+    .col-subhead {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--ink-secondary);
+      margin-bottom: 8px;
+    }
+
+    .col-body {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: 0.875rem;
+      line-height: 1.65;
+      color: var(--ink-primary);
+      text-align: justify;
+    }
+
+    .col-body p {
+      margin-bottom: 8px;
+    }
+
+    /* Dropcap */
+    .col-body p.dropcap::first-letter {
+      font-family: 'IM Fell English SC', Georgia, serif;
+      font-size: 4.2em;
+      float: left;
+      line-height: 0.78;
+      margin-right: 6px;
+      margin-top: 4px;
+      color: var(--ink-primary);
+    }
+
+    /* Pull quote */
+    .pull-quote {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      text-align: center;
+      border-top: 2px solid var(--rule-color);
+      border-bottom: 2px solid var(--rule-color);
+      padding: 10px 12px;
+      margin: 14px 0;
+      color: var(--ink-secondary);
+    }
+
+    /* Notice box */
+    .notice-box {
+      border: 2px solid var(--rule-color);
+      padding: 10px 12px;
+      margin: 14px 0;
+      background: rgba(74, 55, 40, 0.04);
+    }
+
+    .notice-box-title {
+      font-family: 'IM Fell English SC', Georgia, serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-red);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .notice-box p {
+      font-size: 0.8rem;
+      color: var(--ink-secondary);
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    /* Portrait placeholder */
+    #portrait-placeholder {
+      border: 3px double var(--rule-color);
+      width: 100%;
+      aspect-ratio: 3/4;
+      max-height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      background: rgba(74, 55, 40, 0.05);
+      position: relative;
+    }
+
+    #portrait-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px solid var(--rule-color);
+    }
+
+    .portrait-label {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 0.72rem;
+      color: var(--ink-faded);
+      text-align: center;
+      padding: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Cases list */
+    .cases-list {
+      list-style: none;
+      margin: 10px 0;
+    }
+
+    .cases-list li {
+      font-size: 0.8rem;
+      color: var(--ink-secondary);
+      padding: 4px 0;
+      border-bottom: 1px dotted var(--rule-color);
+      line-height: 1.4;
+    }
+
+    .cases-list li strong {
+      font-family: 'IM Fell English SC', Georgia, serif;
+      color: var(--ink-primary);
+      font-size: 0.82rem;
+    }
+
+    /* Clock container */
+    #clock-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 16px 0 8px;
+    }
+
+    .clock-caption {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-style: italic;
+      font-size: 0.72rem;
+      color: var(--ink-faded);
+      text-align: center;
+      margin-top: 6px;
+      max-width: 180px;
+    }
+
+    /* SVG clock newspaper theme */
+    #society-clock {
+      cursor: default;
+      touch-action: none;
+      user-select: none;
+    }
+
+    #society-clock .hand {
+      cursor: grab;
+      transition: filter 0.2s;
+    }
+
+    #society-clock .hand:hover {
+      filter: drop-shadow(0 0 3px rgba(26,16,8,0.5));
+    }
+
+    #society-clock .hand.grabbing {
+      cursor: grabbing;
+    }
+
+    /* === SECTION RULE === */
+    .section-rule {
+      border: none;
+      border-top: 3px double var(--rule-color);
+      margin: 20px 0;
+    }
+
+    /* === NOTICES SECTION === */
+    #notices {
+      display: grid;
+      grid-template-columns: 1fr 2px 1fr;
+      gap: 0;
+      margin-bottom: 20px;
+    }
+
+    #notices .notice-col {
+      padding: 0 14px;
+    }
+
+    #notices .column-rule {
+      margin: 0 10px;
+    }
+
+    .notice-headline {
+      font-family: 'IM Fell English SC', Georgia, serif;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ink-primary);
+      border-bottom: 1px solid var(--rule-color);
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
+
+    .classified {
+      border: 1px solid var(--rule-color);
+      padding: 8px 10px;
+      margin-bottom: 10px;
+      font-size: 0.78rem;
+      color: var(--ink-secondary);
+      line-height: 1.5;
+    }
+
+    .classified strong {
+      font-family: 'IM Fell English SC', Georgia, serif;
+      color: var(--ink-primary);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    /* === NEWSPAPER FOOTER === */
+    #newspaper-footer {
+      text-align: center;
+      padding: 10px 0 6px;
+      border-top: 3px double var(--rule-color);
+      font-family: 'IM Fell English SC', Georgia, serif;
+      font-size: 0.68rem;
+      color: var(--ink-faded);
+      letter-spacing: 0.15em;
+    }
+
+    /* === MODERN CONTENT (Phase 2) === */
+    #modern-content {
+      min-height: 100vh;
+      background-color: var(--midnight-bg);
+      color: var(--midnight-text);
+    }
+
+    /* === MODERN HERO === */
+    #modern-hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 30px;
+      position: relative;
+      background: radial-gradient(ellipse at 50% 30%, #1a0a2e 0%, #0a0a0f 60%);
+      overflow: hidden;
+    }
+
+    /* Starfield */
+    #modern-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 15%, rgba(201,168,76,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 22%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 25% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 75%, rgba(201,168,76,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 45% 85%, rgba(255,255,255,0.35) 0%, transparent 100%),
+        radial-gradient(1px 1px at 15% 45%, rgba(255,255,255,0.25) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 92% 50%, rgba(201,168,76,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 38% 30%, rgba(255,255,255,0.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 78% 88%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 5% 90%, rgba(201,168,76,0.35) 0%, transparent 100%),
+        radial-gradient(1px 1px at 52% 45%, rgba(255,255,255,0.15) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    @keyframes hero-pulse {
+      0%, 100% { opacity: 0.8; }
+      50%       { opacity: 1; }
+    }
+
+    #modern-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(107,63,160,0.15) 0%, transparent 70%);
+      animation: hero-pulse 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.65rem, 1.5vw, 0.85rem);
+      letter-spacing: 0.4em;
+      color: var(--midnight-accent);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(2rem, 6vw, 4.5rem);
+      font-weight: 700;
+      color: var(--midnight-accent);
+      letter-spacing: 0.1em;
+      line-height: 1.1;
+      text-shadow: 0 0 40px rgba(201,168,76,0.4), 0 0 80px rgba(201,168,76,0.2);
+      margin-bottom: 20px;
+    }
+
+    .hero-subtitle {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.75rem, 2vw, 1rem);
+      letter-spacing: 0.3em;
+      color: var(--midnight-muted);
+      margin-bottom: 32px;
+    }
+
+    .hero-tagline {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 300;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      color: var(--midnight-text);
+      font-style: italic;
+      opacity: 0.85;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    .hero-divider {
+      width: 200px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--midnight-accent), transparent);
+      margin: 28px auto;
+    }
+
+    /* === SCROLL INDICATOR === */
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(8px); }
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.5;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    .scroll-indicator span {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--midnight-accent);
+    }
+
+    .scroll-arrow {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(180deg, var(--midnight-accent), transparent);
+    }
+
+    /* === MAIN MODERN CONTAINER === */
+    #modern-main {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 80px 30px;
+    }
+
+    /* === SECTION HEADERS === */
+    .modern-section-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .modern-section-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.45em;
+      color: var(--midnight-accent);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .modern-section-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      color: var(--midnight-text);
+      letter-spacing: 0.05em;
+    }
+
+    .modern-section-rule {
+      width: 120px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--midnight-accent), transparent);
+      margin: 16px auto 0;
+    }
+
+    /* === FEATURE CARDS === */
+    #feature-cards {
+      background: var(--midnight-surface);
+      padding: 80px 0;
+      border-top: 1px solid var(--midnight-border);
+      border-bottom: 1px solid var(--midnight-border);
+    }
+
+    #feature-cards-inner {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 0 30px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+    }
+
+    .feature-card {
+      border: 1px solid var(--midnight-border);
+      border-top: 3px solid var(--midnight-accent);
+      padding: 32px 28px;
+      background: var(--midnight-bg);
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 100%;
+      background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(201,168,76,0.4);
+      box-shadow: 0 0 30px rgba(201,168,76,0.08), 0 8px 40px rgba(0,0,0,0.4);
+    }
+
+    #modern-content.settled .feature-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #modern-content.settled .feature-card:nth-child(1) { transition-delay: 0.1s; }
+    #modern-content.settled .feature-card:nth-child(2) { transition-delay: 0.25s; }
+    #modern-content.settled .feature-card:nth-child(3) { transition-delay: 0.4s; }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 18px;
+      color: var(--midnight-accent);
+      opacity: 0.8;
+    }
+
+    .card-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.05rem;
+      color: var(--midnight-accent);
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+    }
+
+    .card-body {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 400;
+      font-size: 0.9rem;
+      color: var(--midnight-muted);
+      line-height: 1.7;
+    }
+
+    /* === SOCIETY DETAILS === */
+    #society-details {
+      padding: 80px 0;
+    }
+
+    #society-details-inner {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 0 30px;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 40px;
+      margin-top: 50px;
+    }
+
+    .detail-block {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    #modern-content.settled .detail-block {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #modern-content.settled .detail-block:nth-child(1) { transition-delay: 0.15s; }
+    #modern-content.settled .detail-block:nth-child(2) { transition-delay: 0.3s; }
+    #modern-content.settled .detail-block:nth-child(3) { transition-delay: 0.45s; }
+
+    .detail-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.4em;
+      color: var(--midnight-accent);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .detail-value {
+      font-family: 'Raleway', sans-serif;
+      font-size: 1rem;
+      color: var(--midnight-text);
+      line-height: 1.6;
+    }
+
+    .detail-note {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.8rem;
+      color: var(--midnight-muted);
+      margin-top: 6px;
+      font-style: italic;
+    }
+
+    .detail-rule {
+      width: 40px;
+      height: 1px;
+      background: var(--midnight-accent);
+      margin-bottom: 14px;
+      opacity: 0.5;
+    }
+
+    /* === MODERN CLOCK SECTION === */
+    #modern-clock-section {
+      padding: 60px 30px;
+      background: var(--midnight-surface);
+      border-top: 1px solid var(--midnight-border);
+      text-align: center;
+    }
+
+    #modern-clock-container {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    #society-clock-modern {
+      touch-action: none;
+      user-select: none;
+      filter: drop-shadow(0 0 12px rgba(201,168,76,0.35));
+      cursor: default;
+    }
+
+    @keyframes clock-glow-pulse {
+      0%, 100% { filter: drop-shadow(0 0 10px rgba(201,168,76,0.3)); }
+      50%       { filter: drop-shadow(0 0 20px rgba(201,168,76,0.5)); }
+    }
+
+    #society-clock-modern {
+      animation: clock-glow-pulse 3s ease-in-out infinite;
+    }
+
+    #society-clock-modern .hand {
+      cursor: grab;
+    }
+
+    #society-clock-modern .hand.grabbing {
+      cursor: grabbing;
+    }
+
+    .modern-clock-caption {
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      color: var(--midnight-accent);
+      opacity: 0.7;
+    }
+
+    /* === MODERN FOOTER === */
+    #modern-footer {
+      text-align: center;
+      padding: 40px 20px;
+      background: #050508;
+      border-top: 1px solid var(--midnight-border);
+    }
+
+    .footer-rule {
+      width: 200px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--midnight-accent), transparent);
+      margin: 0 auto 20px;
+    }
+
+    .footer-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.82rem;
+      letter-spacing: 0.35em;
+      color: var(--midnight-accent);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .footer-tagline {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 300;
+      font-size: 0.95rem;
+      color: var(--midnight-muted);
+      font-style: italic;
+    }
+
+    /* === REVEAL ENTRANCE ANIMATIONS === */
+    #modern-content {
+      opacity: 0;
+    }
+
+    #modern-content.settling {
+      opacity: 1;
+      transition: opacity 0.8s ease;
+    }
+
+    #modern-hero {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s;
+    }
+
+    #modern-content.settled #modern-hero {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      #broadsheet-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .column-rule {
+        height: 2px;
+        width: 100%;
+        margin: 16px 0;
+      }
+
+      #notices {
+        grid-template-columns: 1fr;
+      }
+
+      #notices .column-rule {
+        height: 2px;
+        width: 100%;
+        margin: 10px 0;
+      }
+
+      #newspaper-content {
+        padding: 15px 18px 30px;
+      }
+
+      .col-1, .col-2, .col-3 {
+        padding: 0;
+      }
+
+      #portrait-placeholder {
+        max-height: 150px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #masthead-title {
+        font-size: 2.4rem;
+      }
+
+      .hero-title {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body class="phase-1">
+
+  <!-- Full-page reveal overlay -->
+  <div id="reveal-overlay"></div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PHASE 1: THE NEWSPAPER
+       ═══════════════════════════════════════════════════════ -->
+  <div id="newspaper-content">
+
+    <header id="masthead">
+      <div id="masthead-title">The Midnight Society</div>
+      <div id="masthead-subtitle">Gazette of the Antiquarian Fellowship</div>
+      <div id="masthead-motto">&ldquo;Lux in Tenebris&rdquo;</div>
+    </header>
+
+    <div id="dateline">
+      <span>Vol. XLVII &mdash; No. 318</span>
+      <span>Established MDCCCLXXII &mdash; London</span>
+      <span>Saturday, the 14th of October, 1893 &mdash; Price: Two Pence</span>
+    </div>
+
+    <main id="broadsheet-grid">
+
+      <!-- COLUMN 1: Lead Article -->
+      <section class="col-1">
+        <h2 class="col-headline">On the Occasion of Our Twenty-First Anniversary: A Retrospective of the Fellowship</h2>
+        <p class="col-subhead">By the Secretary to the Society, Mr. Edmund Halloway, F.R.G.S.</p>
+        <div class="col-body">
+          <p class="dropcap">Founded in the autumn of 1872 by Dr. Cornelius Ashworth Blackwell in the parlour of No. 14 Greymantle Crescent, the Midnight Society was established as a brotherhood of enquiry into the human capacity for deduction, misdirection, and dramatic narrative. What began as a modest gathering of eight gentlemen of curious disposition has, in the span of twenty-one years, grown into a Fellowship of considerable distinction.</p>
+
+          <p>Dr. Blackwell, a retired surgeon of the Crimean Campaign, had observed during his years of military service that men in extremis demonstrated remarkable abilities to read one another's intentions &mdash; abilities he believed could be cultivated as a formal discipline. &ldquo;The mind,&rdquo; he wrote in his celebrated monograph, &ldquo;is never more alive than when it is made to doubt itself.&rdquo;</p>
+
+          <blockquote class="pull-quote">
+            &ldquo;The mind is never more alive than when it is made to doubt itself.&rdquo;
+            <br><span style="font-size:0.75rem; letter-spacing:0.1em;">— DR. C. A. BLACKWELL, 1861</span>
+          </blockquote>
+
+          <p>The Society's early meetings took place under conditions of considerable secrecy, a tradition the Fellowship maintains to this day. Members convened at irregular hours, in locations communicated only by cipher, to engage in what Dr. Blackwell termed &ldquo;investigations of social acuity.&rdquo; These investigations &mdash; elaborate affairs involving assigned roles, concealed motives, and the systematic unravelling of falsehood &mdash; drew participants from every stratum of learned London society.</p>
+
+          <p>By 1878, membership had grown to include several Members of Parliament, two Lord Chief Justices (in an unofficial capacity), a celebrated actress of the Lyceum, and no fewer than four Fellows of the Royal Society. The breadth of membership was by design: Dr. Blackwell held that the science of human deduction was blind to rank, and that the drawing-room was the truest laboratory.</p>
+
+          <div class="notice-box">
+            <div class="notice-box-title">Notice to Members</div>
+            <p>The next Convocation shall be held at the customary hour, in the customary place. Members are reminded that the password for admittance changes at the toll of the clock. Those who do not know the hour will find the door quite firmly shut against them. New members may apply through the usual channels of correspondence.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="column-rule"></div>
+
+      <!-- COLUMN 2: Founder Biography -->
+      <section class="col-2">
+        <h2 class="col-headline">Cornelius Ashworth Blackwell, M.D. F.R.S.: Founder &amp; First President</h2>
+
+        <div id="portrait-placeholder">
+          <p class="portrait-label">[Portrait &mdash; Daguerreotype, circa 1874<br>Courtesy of the Blackwell Estate]</p>
+        </div>
+
+        <p class="col-subhead">A Memoir of the Society's Founder and Guiding Intelligence</p>
+
+        <div class="col-body">
+          <p>Born in 1831 in Shropshire to a family of solicitors, Cornelius Ashworth Blackwell demonstrated from an early age an unsettling gift for reading the intentions of those around him. His mother, who kept a detailed diary now held by the British Museum, recorded that her son could &ldquo;identify a lie at the distance of a drawing-room, and a secret at no greater distance than a handshake.&rdquo;</p>
+
+          <p>Educated at King's College London in the Faculty of Medicine, Blackwell qualified as a surgeon in 1853 and promptly volunteered for service in the Crimea. It was in the field hospitals outside Sebastopol that his peculiar gifts found their fullest expression. Blackwell developed a system of reading facial expression, posture, and vocal cadence to diagnose deception, which he applied, controversially, to the interrogation of prisoners.</p>
+
+          <p>Returning to London in 1856 consumed by a singular obsession, Blackwell spent five years in retreat, producing in 1861 his remarkable and divisive monograph <em>&ldquo;On the Legibility of Human Intent: A Systematic Enquiry.&rdquo;</em> The work drew significant controversy from the Royal Society, who found its conclusions insufficiently mechanistic, and considerable admiration from literary circles, who found them insufficiently implausible.</p>
+
+          <p>Blackwell served as the Society's President without interruption until his death in 1889 at the age of fifty-eight. He is interred in Highgate Cemetery, where his epitaph reads, fittingly: <em>&ldquo;He read the room.&rdquo;</em></p>
+
+          <p>The current President, Mr. Reginald Forsythe-Black, Q.C., has continued the tradition of vigorous intellectual inquiry that Blackwell established. The Society's proceedings, though not publicly documented, are believed to have influenced the methods of more than one celebrated detective of the current era.</p>
+        </div>
+      </section>
+
+      <div class="column-rule"></div>
+
+      <!-- COLUMN 3: Cases & Clock -->
+      <section class="col-3">
+        <h2 class="col-headline">A Brief History of the Fellowship's Notable Convocations</h2>
+
+        <div class="col-body">
+          <p>Over twenty-one years, the Society has convened upon no fewer than three hundred occasions. A selection of the more celebrated Convocations is reproduced below for the edification of the membership.</p>
+
+          <ul class="cases-list">
+            <li><strong>The Whitmore Inheritance Affair</strong> (1875) &mdash; Eight members, three days. A matter of disputed succession, a forged will, and a butler who knew far more than he admitted.</li>
+            <li><strong>The Countess Elspeth Matter</strong> (1879) &mdash; The Society's first Convocation to include a lady of rank in the central role. The Countess proved, by unanimous verdict, the most accomplished dissembler in the Fellowship's history.</li>
+            <li><strong>The Callowell Steam Company Deception</strong> (1883) &mdash; Widely regarded as the most technically demanding Convocation yet undertaken. Fourteen participants, five concealed roles, and a floor plan of unusual complexity.</li>
+            <li><strong>The Thurlow Correspondence</strong> (1886) &mdash; A purely epistolary Convocation conducted entirely by letter over a period of six weeks. The murderer was not identified until the final post.</li>
+            <li><strong>The Midsummer Night Affair</strong> (1890) &mdash; Conducted outdoors, in the grounds of a member's estate in Hampshire, over the course of a long summer evening.</li>
+            <li><strong>The Venetian Commission</strong> (1892) &mdash; The Society's first international Convocation, held in Venice. Proceedings were conducted in three languages simultaneously.</li>
+          </ul>
+
+          <p style="font-style:italic; font-size:0.78rem; color:var(--ink-faded); margin-top: 10px;">Full records of all Convocations are held in the Society's archive, access to which is available to members in good standing upon written application to the Secretary.</p>
+        </div>
+
+        <!-- THE CLOCK -->
+        <div id="clock-container">
+          <svg id="society-clock"
+               viewBox="0 0 200 200"
+               width="180" height="180"
+               xmlns="http://www.w3.org/2000/svg"
+               role="img"
+               aria-label="Society Clock — set the hands to discover something">
+
+            <!-- Clock face -->
+            <circle cx="100" cy="100" r="96" fill="#d4b896" stroke="#2a1a0e" stroke-width="3"/>
+            <circle cx="100" cy="100" r="88" fill="none" stroke="#4a3728" stroke-width="1.2"/>
+            <circle cx="100" cy="100" r="85" fill="none" stroke="#4a3728" stroke-width="0.5"/>
+
+            <!-- Decorative corner accents -->
+            <circle cx="100" cy="16" r="2.5" fill="#4a3728"/>
+            <circle cx="184" cy="100" r="2.5" fill="#4a3728"/>
+            <circle cx="100" cy="184" r="2.5" fill="#4a3728"/>
+            <circle cx="16" cy="100" r="2.5" fill="#4a3728"/>
+
+            <!-- Tick marks and numerals generated by JS -->
+
+            <!-- Hour hand -->
+            <line id="hour-hand-news"
+                  class="hand"
+                  x1="100" y1="100" x2="100" y2="46"
+                  stroke="#1a1008" stroke-width="5.5"
+                  stroke-linecap="round"
+                  transform="rotate(305, 100, 100)"/>
+
+            <!-- Minute hand -->
+            <line id="minute-hand-news"
+                  class="hand"
+                  x1="100" y1="100" x2="100" y2="30"
+                  stroke="#1a1008" stroke-width="3.5"
+                  stroke-linecap="round"
+                  transform="rotate(60, 100, 100)"/>
+
+            <!-- Center pin -->
+            <circle cx="100" cy="100" r="5" fill="#1a1008"/>
+            <circle cx="100" cy="100" r="2" fill="#d4b896"/>
+          </svg>
+          <p class="clock-caption">The Society Clock &mdash; Members will know the significance of the hour.</p>
+        </div>
+      </section>
+
+    </main>
+
+    <hr class="section-rule">
+
+    <!-- NOTICES & CORRESPONDENCE -->
+    <section id="notices">
+      <div class="notice-col">
+        <h3 class="notice-headline">Notices &amp; Correspondence</h3>
+        <div class="classified">
+          <strong>Membership Enquiries</strong>
+          Prospective members should direct all correspondence to the Secretary at the usual address. The Society admits new members by nomination only. Current members wishing to propose a candidate should consult the rules as published in the Standing Orders of 1884, with amendments as of the Michaelmas session of 1891.
+        </div>
+        <div class="classified">
+          <strong>Annual Subscription</strong>
+          Members are reminded that the annual subscription falls due upon the first of November. Those in arrears for two or more years will, by resolution of the Committee, be suspended from participation in Convocations until such arrears are settled. Application for hardship dispensation may be made in writing to the Treasurer.
+        </div>
+      </div>
+
+      <div class="column-rule"></div>
+
+      <div class="notice-col">
+        <h3 class="notice-headline">Letters to the Editor</h3>
+        <div class="classified" style="border:none; padding-left:0;">
+          <strong>On the Matter of the Clock</strong>
+          <em>Sir &mdash;</em> I write to enquire, as a member of some nineteen years standing, whether the Society Clock displayed in these pages is merely decorative, or whether it retains its original function as described in the Founder's correspondence. I have reason to believe the latter. Several members of my acquaintance have hinted at this matter but none will speak plainly. I would be most grateful for clarification at your earliest convenience.
+          <br><br>
+          <em style="font-size:0.75rem;">— A Curious Fellow, London, September 1893</em>
+        </div>
+        <div class="classified" style="font-style:italic; font-size:0.77rem; color:var(--ink-faded); border:none; padding-left: 0;">
+          <em>The Editor declines to comment upon the nature or function of the Society Clock, beyond observing that those who seek the hour will find it, and those who do not seek will remain comfortably unaware. &mdash; Ed.</em>
+        </div>
+      </div>
+    </section>
+
+    <footer id="newspaper-footer">
+      <p>Printed for the Fellowship by Halloway &amp; Sons, Printers, Fleet Street, London &bull; All Rights Reserved by the Midnight Society &bull; Established MDCCCLXXII</p>
+    </footer>
+
+  </div><!-- /#newspaper-content -->
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       PHASE 2: THE MODERN VIEW
+       ═══════════════════════════════════════════════════════ -->
+  <div id="modern-content" style="display:none">
+
+    <!-- Hero -->
+    <section id="modern-hero">
+      <div class="hero-content">
+        <p class="hero-eyebrow">Est. 1872 &mdash; London &mdash; Still Convening</p>
+        <h1 class="hero-title">The Midnight<br>Society</h1>
+        <p class="hero-subtitle">Lux &mdash; In &mdash; Tenebris</p>
+        <div class="hero-divider"></div>
+        <p class="hero-tagline">&ldquo;We have always been here.<br>Now you know where to find us.&rdquo;</p>
+      </div>
+
+      <div class="scroll-indicator">
+        <span>Descend</span>
+        <div class="scroll-arrow"></div>
+      </div>
+    </section>
+
+    <!-- Feature Cards -->
+    <section id="feature-cards">
+      <div id="feature-cards-inner">
+        <div class="modern-section-header">
+          <span class="modern-section-eyebrow">What We Do</span>
+          <h2 class="modern-section-title">The Arts of Deception</h2>
+          <div class="modern-section-rule"></div>
+        </div>
+
+        <div class="cards-grid">
+
+          <div class="feature-card">
+            <svg class="card-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="20" cy="20" rx="18" ry="10" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="20" cy="20" r="5" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="20" cy="20" r="2" fill="currentColor"/>
+            </svg>
+            <h3 class="card-title">The Art of Deduction</h3>
+            <p class="card-body">Our members gather to play the finest social deduction games in existence &mdash; Blood on the Clocktower, Werewolf, The Resistance, Secret Hitler. Every evening is a battle of nerve, wit, and misdirection. You will lie. You will be lied to. You will love every moment of it.</p>
+          </div>
+
+          <div class="feature-card">
+            <svg class="card-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="8" y="6" width="22" height="28" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="13" y1="14" x2="25" y2="14" stroke="currentColor" stroke-width="1.2"/>
+              <line x1="13" y1="19" x2="25" y2="19" stroke="currentColor" stroke-width="1.2"/>
+              <line x1="13" y1="24" x2="20" y2="24" stroke="currentColor" stroke-width="1.2"/>
+              <circle cx="30" cy="30" r="7" fill="var(--midnight-surface)" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="28" y1="30" x2="32" y2="30" stroke="currentColor" stroke-width="1.2"/>
+              <line x1="30" y1="28" x2="30" y2="32" stroke="currentColor" stroke-width="1.2"/>
+            </svg>
+            <h3 class="card-title">Jubensha</h3>
+            <p class="card-body">We run curated script-murder evenings drawn from the rich Chinese <em>jubensha</em> tradition &mdash; immersive narrative investigations where each player holds a character, a motive, and a secret. The scripts are chosen for their psychological depth. The killer is always one of you.</p>
+          </div>
+
+          <div class="feature-card">
+            <svg class="card-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="18" cy="18" r="10" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="25.5" y1="25.5" x2="34" y2="34" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="14" y1="18" x2="22" y2="18" stroke="currentColor" stroke-width="1.2"/>
+              <line x1="18" y1="14" x2="18" y2="22" stroke="currentColor" stroke-width="1.2"/>
+            </svg>
+            <h3 class="card-title">Murder in the Drawing Room</h3>
+            <p class="card-body">Classic murder mystery dinners and Agatha Christie-style investigations. Dress for the era. Prepare a character. Come ready to lie convincingly, observe ruthlessly, and accuse with style. Dinner is always excellent. The victim, less so.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Society Details -->
+    <section id="society-details">
+      <div id="society-details-inner">
+        <div class="modern-section-header">
+          <span class="modern-section-eyebrow">The Fellowship</span>
+          <h2 class="modern-section-title">Still Gathering at the Appointed Hour</h2>
+          <div class="modern-section-rule"></div>
+        </div>
+
+        <div class="details-grid">
+
+          <div class="detail-block">
+            <div class="detail-rule"></div>
+            <span class="detail-label">Where We Meet</span>
+            <p class="detail-value">Locations vary by Convocation. Members receive precise details forty-eight hours in advance by the customary method. We have met in parlours, wine cellars, locked libraries, and &mdash; on one memorable occasion &mdash; a decommissioned railway carriage.</p>
+          </div>
+
+          <div class="detail-block">
+            <div class="detail-rule"></div>
+            <span class="detail-label">How to Join</span>
+            <p class="detail-value">Membership is by invitation only.</p>
+            <p class="detail-note">If you found this page by setting the clock, you may already have received one. Check your correspondence carefully. Some invitations are not obviously legible.</p>
+          </div>
+
+          <div class="detail-block">
+            <div class="detail-rule"></div>
+            <span class="detail-label">The Next Gathering</span>
+            <p class="detail-value">The Next Full Moon</p>
+            <p class="detail-note">As it has always been. The hour is known to members. The location will follow. Come prepared to perform.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Modern Clock -->
+    <section id="modern-clock-section">
+      <span class="modern-section-eyebrow" style="display:block; margin-bottom:8px;">The Society Clock</span>
+      <p style="font-family:'Raleway', sans-serif; font-size:0.85rem; color:var(--midnight-muted); margin-bottom:20px;">You already know how to use it.</p>
+      <div id="modern-clock-container">
+        <svg id="society-clock-modern"
+             viewBox="0 0 200 200"
+             width="200" height="200"
+             xmlns="http://www.w3.org/2000/svg"
+             role="img"
+             aria-label="Society Clock">
+
+          <!-- Dark clock face -->
+          <circle cx="100" cy="100" r="96" fill="#0f0f1a" stroke="#c9a84c" stroke-width="2"/>
+          <circle cx="100" cy="100" r="88" fill="none" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
+          <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(201,168,76,0.15)" stroke-width="0.5"/>
+
+          <!-- Gold corner accents -->
+          <circle cx="100" cy="16" r="2.5" fill="#c9a84c" opacity="0.6"/>
+          <circle cx="184" cy="100" r="2.5" fill="#c9a84c" opacity="0.6"/>
+          <circle cx="100" cy="184" r="2.5" fill="#c9a84c" opacity="0.6"/>
+          <circle cx="16" cy="100" r="2.5" fill="#c9a84c" opacity="0.6"/>
+
+          <!-- Tick marks and numerals generated by JS -->
+
+          <!-- Hour hand (gold) -->
+          <line id="hour-hand-modern"
+                class="hand"
+                x1="100" y1="100" x2="100" y2="46"
+                stroke="#c9a84c" stroke-width="5.5"
+                stroke-linecap="round"
+                transform="rotate(357.5, 100, 100)"/>
+
+          <!-- Minute hand (gold) -->
+          <line id="minute-hand-modern"
+                class="hand"
+                x1="100" y1="100" x2="100" y2="30"
+                stroke="#c9a84c" stroke-width="3.5"
+                stroke-linecap="round"
+                transform="rotate(330, 100, 100)"/>
+
+          <!-- Center pin (gold) -->
+          <circle cx="100" cy="100" r="5" fill="#c9a84c"/>
+          <circle cx="100" cy="100" r="2" fill="#0f0f1a"/>
+        </svg>
+        <p class="modern-clock-caption">11:55</p>
+      </div>
+    </section>
+
+    <footer id="modern-footer">
+      <div class="footer-rule"></div>
+      <p class="footer-title">The Midnight Society &mdash; Since 1872 &mdash; Lux in Tenebris</p>
+      <p class="footer-tagline">&ldquo;You set the clock. You found us.&rdquo;</p>
+    </footer>
+
+  </div><!-- /#modern-content -->
+
+
+  <script>
+    // ═══════════════════════════════════════════════════════
+    // CLOCK STATE
+    // ═══════════════════════════════════════════════════════
+
+    // Initial position: 10:10 (classic watch pose)
+    // Hour at 10 o'clock: (10*30) + (10*0.5) = 305 degrees
+    // Minute at 10 min mark: 10*6 = 60 degrees
+    let hourAngle   = 305;
+    let minuteAngle = 60;
+
+    // 11:55 target angles:
+    // Hour: (11*30) + (55*0.5) = 330 + 27.5 = 357.5 degrees
+    // Minute: 55*6 = 330 degrees
+    const REVEAL_HOUR_ANGLE   = 357.5;
+    const REVEAL_MINUTE_ANGLE = 330;
+
+    let dragging  = null;  // 'hour' | 'minute' | null
+    let activeSvg = null;  // which SVG is being dragged
+    let revealed  = false;
+
+    // ═══════════════════════════════════════════════════════
+    // SVG CLOCK FACE GENERATION
+    // ═══════════════════════════════════════════════════════
+
+    function buildClockFace(svgId, theme) {
+      const svg = document.getElementById(svgId);
+      if (!svg) return;
+
+      const cx = 100, cy = 100;
+      const outerR = 82;
+      const innerR_hour  = 72;
+      const innerR_short = 79;
+      const numR = 63;
+
+      const tickColor   = theme === 'dark' ? 'rgba(201,168,76,0.7)' : '#3d2b1f';
+      const numColor    = theme === 'dark' ? '#c9a84c'               : '#1a1008';
+      const numFamily   = 'IM Fell English SC, Georgia, serif';
+
+      const numerals = ['XII','I','II','III','IV','V','VI','VII','VIII','IX','X','XI'];
+
+      const hourHandId = theme === 'dark' ? 'hour-hand-modern' : 'hour-hand-news';
+      const hourHandEl = svg.querySelector('#' + hourHandId);
+
+      // Generate 60 tick marks
+      for (let i = 0; i < 60; i++) {
+        const isHour = i % 5 === 0;
+        const angle  = (i * 6 - 90) * Math.PI / 180;
+        const inner  = isHour ? innerR_hour : innerR_short;
+
+        const tick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        tick.setAttribute('x1', cx + Math.cos(angle) * outerR);
+        tick.setAttribute('y1', cy + Math.sin(angle) * outerR);
+        tick.setAttribute('x2', cx + Math.cos(angle) * inner);
+        tick.setAttribute('y2', cy + Math.sin(angle) * inner);
+        tick.setAttribute('stroke', tickColor);
+        tick.setAttribute('stroke-width', isHour ? '2' : '0.8');
+        tick.setAttribute('stroke-linecap', 'round');
+
+        svg.insertBefore(tick, hourHandEl);
+      }
+
+      // Generate Roman numerals
+      numerals.forEach((numeral, i) => {
+        const angle = (i * 30 - 90) * Math.PI / 180;
+        const text  = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', cx + Math.cos(angle) * numR);
+        text.setAttribute('y', cy + Math.sin(angle) * numR);
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('dominant-baseline', 'central');
+        text.setAttribute('font-family', numFamily);
+        text.setAttribute('font-size', numeral === 'XII' ? '8.5' : '7.5');
+        text.setAttribute('fill', numColor);
+        text.textContent = numeral;
+        svg.insertBefore(text, hourHandEl);
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // DRAG LOGIC
+    // ═══════════════════════════════════════════════════════
+
+    function getAngleFromCenter(event, svgEl) {
+      const rect = svgEl.getBoundingClientRect();
+      const cx   = rect.left + rect.width  / 2;
+      const cy   = rect.top  + rect.height / 2;
+      const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+      const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+      const dx = clientX - cx;
+      const dy = clientY - cy;
+      let angle = Math.atan2(dx, -dy) * (180 / Math.PI);
+      if (angle < 0) angle += 360;
+      return angle;
+    }
+
+    function getDistanceFromCenter(event, svgEl) {
+      const rect = svgEl.getBoundingClientRect();
+      const cx   = rect.left + rect.width  / 2;
+      const cy   = rect.top  + rect.height / 2;
+      const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+      const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+      return Math.sqrt(Math.pow(clientX - cx, 2) + Math.pow(clientY - cy, 2));
+    }
+
+    function angleDiff(a, b) {
+      let diff = Math.abs(a - b) % 360;
+      return diff > 180 ? 360 - diff : diff;
+    }
+
+    function updateHandTransforms() {
+      const hands = [
+        { id: 'hour-hand-news',    angle: hourAngle   },
+        { id: 'minute-hand-news',  angle: minuteAngle },
+        { id: 'hour-hand-modern',  angle: hourAngle   },
+        { id: 'minute-hand-modern',angle: minuteAngle },
+      ];
+      hands.forEach(({ id, angle }) => {
+        const el = document.getElementById(id);
+        if (el) el.setAttribute('transform', `rotate(${angle}, 100, 100)`);
+      });
+    }
+
+    function handlePointerDown(e, svgEl) {
+      if (revealed) return;
+
+      const angle = getAngleFromCenter(e, svgEl);
+      const dist  = getDistanceFromCenter(e, svgEl);
+
+      // Scale factor: SVG is 200x200 but rendered at 180x180 or 200x200
+      const rect = svgEl.getBoundingClientRect();
+      const scaleFactor = rect.width / 200;
+      const scaledDist = dist / scaleFactor;
+
+      // Only respond within the clock face (roughly r=15 to r=85)
+      if (scaledDist < 10 || scaledDist > 90) return;
+
+      const hourDiff   = angleDiff(angle, hourAngle);
+      const minuteDiff = angleDiff(angle, minuteAngle);
+
+      if (hourDiff <= 20 || minuteDiff <= 20) {
+        dragging  = (hourDiff < minuteDiff) ? 'hour' : 'minute';
+        activeSvg = svgEl;
+
+        e.preventDefault();
+        svgEl.setPointerCapture(e.pointerId);
+
+        // Visual feedback
+        const handId = dragging === 'hour'
+          ? (svgEl.id === 'society-clock' ? 'hour-hand-news'   : 'hour-hand-modern')
+          : (svgEl.id === 'society-clock' ? 'minute-hand-news' : 'minute-hand-modern');
+        const handEl = document.getElementById(handId);
+        if (handEl) handEl.classList.add('grabbing');
+      }
+    }
+
+    function handlePointerMove(e) {
+      if (!dragging || !activeSvg) return;
+      e.preventDefault();
+
+      const angle = getAngleFromCenter(e, activeSvg);
+
+      if (dragging === 'hour') {
+        hourAngle = angle;
+      } else {
+        minuteAngle = angle;
+      }
+
+      updateHandTransforms();
+    }
+
+    function handlePointerUp(e) {
+      if (!dragging) return;
+
+      // Remove grabbing class
+      ['hour-hand-news','minute-hand-news','hour-hand-modern','minute-hand-modern'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('grabbing');
+      });
+
+      dragging  = null;
+      activeSvg = null;
+
+      checkForReveal();
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // TIME CHECK & SNAP
+    // ═══════════════════════════════════════════════════════
+
+    function checkForReveal() {
+      if (revealed) return;
+
+      // Tolerance: ±3 minutes of arc for minute hand (~18 degrees),
+      //            ±15 degrees for hour hand
+      const minuteClose = angleDiff(minuteAngle, REVEAL_MINUTE_ANGLE) < 18;
+      const hourClose   = angleDiff(hourAngle,   REVEAL_HOUR_ANGLE)   < 15;
+
+      if (minuteClose && hourClose) {
+        revealed = true;
+        snapToMidnight();
+      }
+    }
+
+    function snapToMidnight() {
+      // Smoothly snap both hands to exact 11:55
+      const hands = ['hour-hand-news','minute-hand-news','hour-hand-modern','minute-hand-modern'];
+      hands.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.style.transition = 'transform 0.5s ease-in-out';
+      });
+
+      hourAngle   = REVEAL_HOUR_ANGLE;
+      minuteAngle = REVEAL_MINUTE_ANGLE;
+      updateHandTransforms();
+
+      // Remove transition after snap, then fire reveal
+      setTimeout(() => {
+        hands.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.style.transition = '';
+        });
+        initiateReveal();
+      }, 600);
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // REVEAL ORCHESTRATION
+    // ═══════════════════════════════════════════════════════
+
+    function initiateReveal() {
+      const body    = document.body;
+      const overlay = document.getElementById('reveal-overlay');
+
+      // Phase 0: tremor (0–400ms)
+      body.classList.add('tremoring');
+      body.addEventListener('animationend', () => body.classList.remove('tremoring'), { once: true });
+
+      // Phase 1: flicker overlay (400–900ms)
+      setTimeout(() => {
+        overlay.classList.add('flickering');
+      }, 400);
+
+      // Phase 2: swap content, begin ink recession (900ms)
+      setTimeout(() => {
+        // Swap
+        document.getElementById('newspaper-content').style.display = 'none';
+        const modernContent = document.getElementById('modern-content');
+        modernContent.style.display = 'block';
+
+        // Switch body theme
+        body.classList.remove('phase-1');
+        body.classList.add('phase-2');
+
+        // Start ink recession
+        overlay.classList.remove('flickering');
+        overlay.classList.add('ink-receding');
+
+        // Fade in modern content underneath
+        modernContent.classList.add('settling');
+
+      }, 900);
+
+      // Phase 3: settle (2100ms)
+      setTimeout(() => {
+        const modernContent = document.getElementById('modern-content');
+        modernContent.classList.add('settled');
+        overlay.style.pointerEvents = 'none';
+      }, 2100);
+
+      // Phase 4: hide overlay entirely (3000ms)
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 3000);
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // ATTACH SVG EVENT LISTENERS
+    // ═══════════════════════════════════════════════════════
+
+    function attachClockListeners(svgId) {
+      const svg = document.getElementById(svgId);
+      if (!svg) return;
+
+      svg.addEventListener('pointerdown', (e) => handlePointerDown(e, svg));
+      svg.addEventListener('pointermove', handlePointerMove, { passive: false });
+      svg.addEventListener('pointerup', handlePointerUp);
+      svg.addEventListener('pointercancel', handlePointerUp);
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════════════
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Build clock faces
+      buildClockFace('society-clock', 'light');
+      buildClockFace('society-clock-modern', 'dark');
+
+      // Set initial hand positions
+      updateHandTransforms();
+
+      // Attach drag listeners
+      attachClockListeners('society-clock');
+      attachClockListeners('society-clock-modern');
+    });
+  </script>
+
+</body>
+</html>
